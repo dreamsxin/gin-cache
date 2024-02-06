@@ -20,6 +20,7 @@ type Config struct {
 	singleFlightForgetTimeout time.Duration
 	shareSingleFlightCallback OnShareSingleFlightCallback
 
+	browserLanguage  bool
 	ignoreQueryOrder bool
 	prefixKey        string
 	withoutHeader    bool
@@ -158,6 +159,12 @@ func WithPrefixKey(prefix string) Option {
 func WithoutHeader() Option {
 	return func(c *Config) {
 		c.withoutHeader = true
+	}
+}
+
+func WithLanguage() Option {
+	return func(c *Config) {
+		c.browserLanguage = true
 	}
 }
 

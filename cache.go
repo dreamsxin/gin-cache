@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/chenyahui/gin-cache/persist"
+	"github.com/dreamsxin/gin-cache/persist"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/sync/singleflight"
 )
@@ -146,15 +146,25 @@ func CacheByRequestURI(defaultCacheStore persist.CacheStore, defaultExpire time.
 				newUri = c.Request.RequestURI
 			}
 
+			lang := ""
+			if cfg.browserLanguage {
+				lang = c.GetHeader("Accept-Language")
+			}
+
 			return true, Strategy{
-				CacheKey: newUri,
+				CacheKey: lang + ":" + newUri,
 			}
 		}
 
 	} else {
 		cacheStrategy = func(c *gin.Context) (bool, Strategy) {
+
+			lang := ""
+			if cfg.browserLanguage {
+				lang = c.GetHeader("Accept-Language")
+			}
 			return true, Strategy{
-				CacheKey: c.Request.RequestURI,
+				CacheKey: lang + ":" + c.Request.RequestURI,
 			}
 		}
 	}
