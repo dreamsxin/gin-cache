@@ -21,6 +21,7 @@ type Config struct {
 	shareSingleFlightCallback OnShareSingleFlightCallback
 
 	browserLanguage  bool
+	host             bool
 	ignoreQueryOrder bool
 	prefixKey        string
 	withoutHeader    bool
@@ -165,6 +166,12 @@ func WithoutHeader() Option {
 func WithLanguage() Option {
 	return func(c *Config) {
 		c.browserLanguage = true
+	}
+}
+
+func WithHost() Option {
+	return func(c *Config) {
+		c.host = true
 	}
 }
 

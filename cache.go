@@ -146,25 +146,35 @@ func CacheByRequestURI(defaultCacheStore persist.CacheStore, defaultExpire time.
 				newUri = c.Request.RequestURI
 			}
 
+			host := ""
+			if cfg.host {
+				host = c.Request.Host
+			}
+
 			lang := ""
 			if cfg.browserLanguage {
 				lang = c.GetHeader("Accept-Language")
 			}
 
 			return true, Strategy{
-				CacheKey: lang + ":" + newUri,
+				CacheKey: host + ":" + lang + ":" + newUri,
 			}
 		}
 
 	} else {
 		cacheStrategy = func(c *gin.Context) (bool, Strategy) {
 
+			host := ""
+			if cfg.host {
+				host = c.Request.Host
+			}
+
 			lang := ""
 			if cfg.browserLanguage {
 				lang = c.GetHeader("Accept-Language")
 			}
 			return true, Strategy{
-				CacheKey: lang + ":" + c.Request.RequestURI,
+				CacheKey: host + ":" + lang + ":" + c.Request.RequestURI,
 			}
 		}
 	}
