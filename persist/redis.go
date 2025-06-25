@@ -10,7 +10,7 @@ import (
 
 // RedisStore store http response in redis
 type RedisStore struct {
-	RedisClient *redis.Client
+	RedisClient redis.UniversalClient
 	Prefix      string
 }
 
@@ -21,7 +21,7 @@ func WithPrefixOption(prefix string) RedisOption {
 }
 
 // NewRedisStore create a redis memory store with redis client
-func NewRedisStore(redisClient *redis.Client, options ...RedisOption) *RedisStore {
+func NewRedisStore(redisClient redis.UniversalClient, options ...RedisOption) *RedisStore {
 	c := &RedisStore{
 		RedisClient: redisClient,
 	}
