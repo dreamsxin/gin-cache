@@ -26,6 +26,7 @@ type Config struct {
 	prefixKey        string
 	withoutHeader    bool
 	discardHeaders   []string
+	body             bool
 }
 
 func newConfigByOpts(opts ...Option) *Config {
@@ -178,6 +179,12 @@ func WithHost() Option {
 func WithDiscardHeaders(headers []string) Option {
 	return func(c *Config) {
 		c.discardHeaders = headers
+	}
+}
+
+func WithBody() Option {
+	return func(c *Config) {
+		c.body = true
 	}
 }
 

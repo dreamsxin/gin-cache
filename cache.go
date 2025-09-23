@@ -2,8 +2,11 @@ package cache
 
 import (
 	"bytes"
+	"crypto/md5"
 	"encoding/gob"
+	"encoding/hex"
 	"errors"
+	"io"
 	"net/http"
 	"net/url"
 	"sort"
@@ -160,8 +163,26 @@ func CacheByRequestURI(defaultCacheStore persist.CacheStore, defaultExpire time.
 				lang = c.GetHeader("Accept-Language")
 			}
 
+			body := ""
+			if cfg.body {
+				var requestBody []byte
+				var err error
+				if c.Request.Body != nil {
+					requestBody, err = io.ReadAll(c.Request.Body)
+					if err != nil {
+						cfg.logger.Errorf("read request body error: %s", err)
+					}
+				}
+				c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
+
+				if len(requestBody) > 0 {
+					hash := md5.Sum(requestBody)
+					body = hex.EncodeToString(hash[:])
+				}
+			}
+
 			return true, Strategy{
-				CacheKey: host + ":" + lang + ":" + newUri,
+				CacheKey: host + ":" + lang + ":" + newUri + ":" + body,
 			}
 		}
 
@@ -177,8 +198,27 @@ func CacheByRequestURI(defaultCacheStore persist.CacheStore, defaultExpire time.
 			if cfg.browserLanguage {
 				lang = c.GetHeader("Accept-Language")
 			}
+
+			body := ""
+			if cfg.body {
+				var requestBody []byte
+				var err error
+				if c.Request.Body != nil {
+					requestBody, err = io.ReadAll(c.Request.Body)
+					if err != nil {
+						cfg.logger.Errorf("read request body error: %s", err)
+					}
+				}
+				c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
+
+				if len(requestBody) > 0 {
+					hash := md5.Sum(requestBody)
+					body = hex.EncodeToString(hash[:])
+				}
+			}
+
 			return true, Strategy{
-				CacheKey: host + ":" + lang + ":" + c.Request.RequestURI,
+				CacheKey: host + ":" + lang + ":" + c.Request.RequestURI + ":" + body,
 			}
 		}
 	}
