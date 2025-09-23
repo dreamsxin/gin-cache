@@ -182,9 +182,9 @@ func WithDiscardHeaders(headers []string) Option {
 	}
 }
 
-func WithBody() Option {
+func WithBody(body bool) Option {
 	return func(c *Config) {
-		c.body = true
+		c.body = body
 	}
 }
 

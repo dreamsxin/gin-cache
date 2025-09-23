@@ -26,6 +26,7 @@ func main() {
 			cache.WithOnMissCache(func(c *gin.Context) {
 				atomic.AddInt32(&cacheMissCount, 1)
 			}),
+			cache.WithBody(true),
 		),
 		func(c *gin.Context) {
 			c.String(200, "hello world")
